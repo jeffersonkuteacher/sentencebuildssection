@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Versant Section C: Sentence Builds</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .versant-window {
+            background-color: #ffffff;
+            width: 900px;
+            height: 550px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid #d1d1d1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- Header Styles --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-circle {
+            background-color: #464646;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .title {
+            color: #1a3668;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .header-right-text {
+            color: #333;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* --- Intro Screen Styles --- */
+        #intro-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .intro-text-box {
+            background-color: #f4f4f4;
+            margin: 0 40px;
+            padding: 20px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .instructions {
+            padding: 10px 40px 10px 40px;
+            color: #1a3668;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* --- Quiz Content Styles --- */
+        #quiz-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .question-container {
+            flex: 1;
+            margin: 0 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-blue-box {
+            background-color: #2b3d5b;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .speech-bubble-icon {
+            color: white;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        /* --- Action Container (Button & Notice) --- */
+        #action-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .speak-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speak-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .test-notice {
+            color: #a0aec0;
+            font-size: 13px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* --- Live Transcript Display --- */
+        #live-transcript {
+            display: none;
+            margin-top: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-style: italic;
+            min-height: 20px;
+            width: 80%;
+            text-align: center;
+        }
+
+        /* --- Status Indicators --- */
+        .status-indicator {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .playing-indicator {
+            color: #f39c12;
+            animation: pulse 1.5s infinite;
+        }
+
+        .listening-indicator {
+            color: #2ecc71;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .playing-dot { background-color: #f39c12; }
+        .listening-dot { background-color: #2ecc71; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        /* --- Footer Styles --- */
+        .footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px 40px;
+            gap: 20px;
+        }
+
+        .timer-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-bg {
+            background-color: #e0e0e0;
+            width: 60px;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: #2ecc71;
+            height: 100%;
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        .timer-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a3668; 
+            font-weight: bold; 
+            font-size: 16px; 
+            gap: 8px;
+        }
+
+        .icon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- End Screen Styles --- */
+        #end-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background-color: #f8f9fa;
+        }
+
+        .feedback-container {
+            padding: 20px 40px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .score-banner {
+            background-color: #1a3668;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .results-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .results-list li {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 5px solid #1a3668;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .restart-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #1a3668;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: block;
+            width: 200px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="versant-window">
+        
+        <div id="intro-screen">
+            <div class="header">
+                <div class="header-left">
+                    <div class="icon-circle">C</div>
+                    <h1 class="title">Sentence Builds</h1>
+                </div>
+                <div class="header-right-text">Instructions</div>
+            </div>
+
+            <div class="intro-text-box">
+                Please rearrange the word groups into a sentence.<br><br>
+                You will hear a sentence divided into three chunks and played out of order. Listen carefully. 
+                <strong>Once the audio finishes playing, click the "Speak" button to begin your recording.</strong> You will hear a beep, the timer will start, and you will have 15 seconds to say the correctly assembled sentence.
+            </div>
+
+            <div style="flex: 1;"></div> 
+
+            <div class="footer">
+                <button class="icon-btn" onclick="startPractice()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                    Start Test
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-screen">
+            <div class="header">
+                <div class="header-left">
+                    <div class="icon-circle">C</div>
+                    <h1 class="title">Sentence Builds</h1>
+                </div>
+                <div class="header-right-text" id="question-counter">1 / 12</div>
+            </div>
+
+            <div class="instructions">Rearrange the word groups into a sentence.</div>
+
+            <div class="question-container">
+                <div class="main-blue-box">
+                    
+                    <svg class="speech-bubble-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                    </svg>
+
+                    <div id="action-container">
+                        <button class="speak-btn" onclick="startRecordingPhase()">
+                            🎤 Click to Speak
+                        </button>
+                        <div class="test-notice">(in the real test, microphone will run automatically)</div>
+                    </div>
+                    
+                    <div id="live-transcript">Listening...</div>
+
+                    <div class="status-indicator playing-indicator" id="playing-indicator" style="display: none;">
+                        <div class="status-dot playing-dot"></div> Playing Audio...
+                    </div>
+                    <div class="status-indicator listening-indicator" id="listening-indicator" style="display: none;">
+                        <div class="status-dot listening-dot"></div> Listening... (Speak Now)
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="timer-group">
+                    <div class="progress-bg">
+                        <div class="progress-fill" id="timer-bar"></div>
+                    </div>
+                    <div class="timer-text">
+                        ⏱ <span id="timer-text-val">00'15"</span>
+                    </div>
+                </div>
+                
+                <button class="icon-btn" id="next-btn" onclick="handleNextClick()" style="margin-left: 20px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11h2v6h-2z"/></svg>
+                    Finish Early
+                </button>
+            </div>
+        </div>
+
+        <div id="end-screen">
+            <div class="header">
+                <div class="header-left">
+                    <div class="icon-circle">✔</div>
+                    <h1 class="title">Practice Complete</h1>
+                </div>
+                <div class="header-right-text">Feedback</div>
+            </div>
+            
+            <div class="feedback-container">
+                <div class="score-banner" id="final-score-banner">
+                    Calculating Score...
+                </div>
+                <p style="margin-top: 0; color: #555;">Review your answers below. Scores are based on how many correct words were detected in your response.</p>
+                <ul class="results-list" id="results-list">
+                    </ul>
+                <button class="restart-btn" onclick="location.reload()">Restart Practice</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/01_Chapter%201.mp3", expected: "She wants to study English." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/02_Chapter%202.mp3", expected: "She is going to visit her mother." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/03_Chapter%203.mp3", expected: "The project will be finished on Monday." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/04_Chapter%204.mp3", expected: "The phone rang while she was cooking." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/05_Chapter%205.mp3", expected: "Tomorrow is going to be sunny." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/06_Chapter%206.mp3", expected: "They went to the zoo yesterday." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/07_Chapter%207.mp3", expected: "She has already finished the project." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/08_Chapter%208.mp3", expected: "I always go to the park in the afternoon." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/09_Chapter%209.mp3", expected: "Hand me the salt, please." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/10_Chapter%2010.mp3", expected: "My grandmother wants to start a new business." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/11_Chapter%2011.mp3", expected: "I am interested in reading books." },
+            { audio: "https://raw.githubusercontent.com/jeffersonkuteacher/sentencebuildssection/main/12_Chapter%2012.mp3", expected: "I am looking forward to seeing you." }
+        ];
+
+        let currentIndex = 0;
+        let timeLeft = 15;
+        let timerInterval;
+        let userResponses = [];
+        let currentAudioPlayer = null;
+        
+        let recognition = null;
+        let finalTranscript = "";
+        let isRecording = false;
+        let audioContext = null;
+
+        // DOM Elements
+        const introScreen = document.getElementById('intro-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const endScreen = document.getElementById('end-screen');
+        const questionCounter = document.getElementById('question-counter');
+        const timerTextVal = document.getElementById('timer-text-val');
+        const timerBar = document.getElementById('timer-bar');
+        const nextBtn = document.getElementById('next-btn');
+        const playingIndicator = document.getElementById('playing-indicator');
+        const listeningIndicator = document.getElementById('listening-indicator');
+        const actionContainer = document.getElementById('action-container');
+        const liveTranscriptBox = document.getElementById('live-transcript');
+
+        // Play Beep Function
+        function playBeep() {
+            if (!audioContext) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContext();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); 
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3); 
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        // Freshly builds the speech recognizer
+        function setupSpeechRecognition() {
+            if (recognition) {
+                recognition.onend = null; 
+                try { recognition.abort(); } catch(e) {}
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true; 
+            recognition.interimResults = true; 
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                let currentText = "";
+                for (let i = 0; i < event.results.length; ++i) {
+                    currentText += event.results[i][0].transcript + " ";
+                }
+                finalTranscript = currentText; 
+                liveTranscriptBox.innerText = finalTranscript; // Update Live Box
+            };
+
+            // Aggressive Restart to prevent silent dropouts
+            recognition.onend = () => {
+                if (isRecording) {
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                console.warn("Speech recognition error:", event.error);
+                if (event.error === 'not-allowed') {
+                    isRecording = false;
+                }
+            };
+        }
+
+        async function startPractice() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Speech Recognition is not supported. Please use Google Chrome on Desktop.");
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioCtx();
+                
+                await new Promise(resolve => setTimeout(resolve, 500)); 
+            } catch (err) {
+                alert("You must allow microphone access to complete this practice.");
+                return; 
+            }
+
+            introScreen.style.display = 'none';
+            quizScreen.style.display = 'flex';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            clearInterval(timerInterval);
+            timeLeft = 15;
+            updateTimerUI();
+            
+            nextBtn.disabled = true; 
+            listeningIndicator.style.display = 'none';
+            actionContainer.style.display = 'none';
+            liveTranscriptBox.style.display = 'none'; // Hide live text
+            playingIndicator.style.display = 'flex';
+            
+            questionCounter.innerText = `${currentIndex + 1} / ${questions.length}`;
+
+            if (currentAudioPlayer) {
+                currentAudioPlayer.pause();
+            }
+            
+            currentAudioPlayer = new Audio(questions[currentIndex].audio + "?t=" + new Date().getTime());
+            
+            currentAudioPlayer.onended = () => {
+                promptToSpeak();
+            };
+
+            currentAudioPlayer.onerror = () => {
+                console.error("Audio Failed to Load");
+                handleNextClick(true);
+            };
+
+            currentAudioPlayer.play().catch(error => {
+                console.error("Autoplay prevented:", error);
+                handleNextClick(true);
+            });
+        }
+
+        function promptToSpeak() {
+            playingIndicator.style.display = 'none';
+            actionContainer.style.display = 'flex';
+            nextBtn.disabled = false; 
+        }
+
+        function startRecordingPhase() {
+            actionContainer.style.display = 'none';
+            listeningIndicator.style.display = 'flex';
+            liveTranscriptBox.style.display = 'block';
+            liveTranscriptBox.innerText = "Listening..."; 
+
+            // 1. Play Beep
+            playBeep();
+
+            // 2. Setup fresh microphone listener
+            setupSpeechRecognition();
+            finalTranscript = "";
+            isRecording = true;
+
+            // 3. WAIT FOR BEEP TO FINISH BEFORE STARTING MIC (Hardware Collision Fix)
+            setTimeout(() => {
+                if (isRecording) {
+                    try { recognition.start(); } catch(e) {}
+                }
+            }, 400); 
+
+            // 4. Start 15 Second Countdown
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+                if (timeLeft <= 0) {
+                    handleNextClick(); 
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            let secondsStr = timeLeft < 10 ? '0' + timeLeft : timeLeft;
+            timerTextVal.innerText = `00'${secondsStr}"`;
+
+            let percentage = (timeLeft / 15) * 100;
+            timerBar.style.width = `${percentage}%`;
+            
+            if (timeLeft <= 5) timerBar.style.backgroundColor = '#e74c3c';
+            else timerBar.style.backgroundColor = '#2ecc71';
+        }
+
+        function handleNextClick(skipSave = false) {
+            isRecording = false;
+            clearInterval(timerInterval);
+            nextBtn.disabled = true;
+            listeningIndicator.style.display = 'none';
+            actionContainer.style.display = 'none';
+            liveTranscriptBox.style.display = 'none';
+            
+            if (currentAudioPlayer) {
+                currentAudioPlayer.pause();
+            }
+
+            if (recognition) {
+                recognition.onend = null; 
+                try { recognition.stop(); } catch(e) {}
+            }
+
+            if (!skipSave) {
+                userResponses.push({
+                    expected: questions[currentIndex].expected,
+                    said: finalTranscript.trim() || "(No speech detected)"
+                });
+            }
+
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                setTimeout(loadQuestion, 800); 
+            } else {
+                showEndScreen();
+            }
+        }
+
+        function calculateAccuracy(expected, said) {
+            const cleanExpected = expected.toLowerCase().replace(/[.,!?]/g, '').split(' ');
+            const cleanSaid = said.toLowerCase().replace(/[.,!?]/g, '').split(' ');
+            
+            let matchCount = 0;
+            cleanExpected.forEach(word => {
+                if (cleanSaid.includes(word)) {
+                    matchCount++;
+                    const idx = cleanSaid.indexOf(word);
+                    cleanSaid.splice(idx, 1);
+                }
+            });
+
+            return Math.round((matchCount / cleanExpected.length) * 100);
+        }
+
+        function showEndScreen() {
+            quizScreen.style.display = 'none';
+            endScreen.style.display = 'flex';
+
+            const resultsList = document.getElementById('results-list');
+            let totalScoreAcc = 0;
+
+            userResponses.forEach((res, index) => {
+                let acc = calculateAccuracy(res.expected, res.said);
+                totalScoreAcc += acc;
+
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <strong style="color: #1a3668;">Audio ${index + 1}</strong>
+                        <span style="background-color: ${acc > 70 ? '#2ecc71' : acc > 40 ? '#f39c12' : '#e74c3c'}; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">Score: ${acc}%</span>
+                    </div>
+                    <div style="color: #444; font-size: 14px; margin-bottom: 8px; background: #f4f4f4; padding: 10px; border-radius: 4px;">
+                        <em>Correct Sentence:</em><br/> ${res.expected}
+                    </div>
+                    <div style="color: #2b3d5b; font-size: 14px;">
+                        <em>You said:</em><br/> ${res.said}
+                    </div>
+                `;
+                resultsList.appendChild(li);
+            });
+
+            let finalScore = userResponses.length > 0 ? Math.round(totalScoreAcc / userResponses.length) : 0;
+            document.getElementById('final-score-banner').innerText = `Final Score: ${finalScore}%`;
+        }
+    </script>
+</body>
+</html>
